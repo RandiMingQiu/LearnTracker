@@ -2,11 +2,11 @@ package com.learntracker.entity;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name="Users")
+@Entity//这个类=数据库表
+@Table(name="Users")//对应数据库里的Users表
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id//主键
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自增
     private Long id;
 
     private String username;
