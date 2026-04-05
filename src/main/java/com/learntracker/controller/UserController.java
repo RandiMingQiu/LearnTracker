@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserService userService;//接口类型的变量，里面装的是实现类对象
+    private UserService userService;//里面装的是Spring注入的UserServiceImpl对象
 
     @GetMapping("test")
     public String test(String username,String password){
