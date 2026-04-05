@@ -12,10 +12,9 @@ public class UserController {
     @Autowired
     private UserService userService;//接口类型的变量，里面装的是实现类对象
 
-    @GetMapping("/register")
-    public String register(String username,String password){
+    @GetMapping("test")
+    public String test(String username,String password){
         userService.register(username,password);
-        //实际执行的是UserServiceImpl.register()
-        return "注册成功！";
+        return "ok";
     }
 }
