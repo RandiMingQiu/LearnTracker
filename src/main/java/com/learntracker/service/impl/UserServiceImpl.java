@@ -1,15 +1,46 @@
 package com.learntracker.service.impl;
 
+import com.learntracker.config.JwtUtil;
+import com.learntracker.dto.LoginDTO;
+import com.learntracker.dto.RegisterDTO;
+import com.learntracker.entity.User;
+import com.learntracker.repository.UserRepository;
 import com.learntracker.service.UserService;
+import com.learntracker.vo.LoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
-//意思就是把这个类交给Spring管理，他会自动创建对象，放进容器，
-// 看到@Autowired就把对象塞给userService
-//定义函数具体的执行逻辑
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public void register(String username,String password){
-        System.out.println("注册成功\n用户名："+username);//控制台打印
+    public void register(RegisterDTO dto) {
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
+        user.setEmail(dto.getEmail());
+        userRepository.save(user);
+    }
+
+    @Override
+    public LoginVO login(LoginDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new RuntimeException("用户不存在"));
+
+        if (!BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("密码错误");
+        }
+
+        String token = JwtUtil.generateToken(user.getUsername());
+        return new LoginVO(token);
+    }
+
+    @Override
+    public String getCurrentUser(String token) {
+        return JwtUtil.parseToken(token);
     }
 }

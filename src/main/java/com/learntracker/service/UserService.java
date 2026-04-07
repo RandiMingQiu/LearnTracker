@@ -1,6 +1,14 @@
 package com.learntracker.service;
 
-//接口文件，定义要做什么
+import com.learntracker.dto.LoginDTO;
+import com.learntracker.dto.RegisterDTO;
+import com.learntracker.vo.LoginVO;
+
 public interface UserService {
-    void register(String username,String password);
+
+    void register(RegisterDTO dto);
+
+    LoginVO login(LoginDTO dto);
+
+    String getCurrentUser(String token);
 }
