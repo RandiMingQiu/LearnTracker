@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String token = JwtUtil.generateToken(user.getUsername());
+        System.out.println("token = " + token);
         return new LoginVO(token);
     }
 

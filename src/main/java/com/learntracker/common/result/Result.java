@@ -1,5 +1,8 @@
 package com.learntracker.common.result;
 
+import lombok.Data;
+
+@Data
 public class Result<T> {
 
     private Integer code;
@@ -25,6 +28,4 @@ public class Result<T> {
     public static <T> Result<T> fail(String message) {
         return new Result<>(500, message, null);
     }
-
-    // getter/setter 省略（IDE生成）
 }

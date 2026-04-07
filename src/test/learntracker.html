@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>LearnTracker</title>
 
+    <!-- ✅ 引入 axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <style>
         body {
             font-family: Arial;
@@ -59,7 +62,6 @@
             padding: 10px;
             border-bottom: 1px solid #eee;
         }
-
     </style>
 </head>
 
@@ -108,6 +110,15 @@
 
     let token = "";
 
+    // 页面加载时恢复 token（防刷新丢失）
+    window.onload = function() {
+        const savedToken = localStorage.getItem("token");
+        if (savedToken) {
+            token = savedToken;
+            document.getElementById("token").innerText = token;
+        }
+    }
+
     // 注册
     function register() {
         fetch("http://localhost:8080/user/register", {
@@ -118,41 +129,50 @@
                 password: reg_password.value,
                 email: reg_email.value
             })
-        }).then(res => res.json()).then(data => {
-            alert("注册成功");
-        });
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert("注册成功");
+            });
     }
 
     // 登录
     function login() {
+        const username = document.getElementById("login_username").value;
+        const password = document.getElementById("login_password").value;
 
-        alert("点到了登录");
+        axios.post("http://localhost:8080/user/login", {
+            username: username,
+            password: password
+        })
+            .then(function(res) {
+                console.log("响应：", res);
 
-        fetch("http://localhost:8080/user/login", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                username: document.getElementById("login_username").value,
-                password: document.getElementById("login_password").value
+                if (res.data.code === 200) {
+                    token = res.data.data.token;
+
+                    // ✅ 保存到本地
+                    localStorage.setItem("token", token);
+
+                    document.getElementById("token").innerText = token;
+
+                    alert("登录成功！");
+                } else {
+                    alert("登录失败：" + res.data.message);
+                }
             })
-        }).then(res => res.json()).then(data => {
-
-            console.log("返回：", data);
-
-            if (data.code !== 200) {
-                alert("登录失败：" + data.msg || data.messages);
-                return;
-            }
-
-            token = data.data.token;
-            document.getElementById("token").innerText = token;
-
-            alert("登录成功");
-        });
+            .catch(function(error) {
+                console.log("请求错误：", error);
+            });
     }
 
     // 新增资源
     function addResource() {
+        if (!token) {
+            alert("请先登录！");
+            return;
+        }
+
         fetch("http://localhost:8080/resource", {
             method: "POST",
             headers: {
@@ -165,33 +185,42 @@
                 url: url.value,
                 status: status.value
             })
-        }).then(res => res.json()).then(data => {
-            alert("添加成功");
-            listResource();
-        });
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert("添加成功");
+                listResource();
+            });
     }
 
     // 查询资源
     function listResource() {
+        if (!token) {
+            alert("请先登录！");
+            return;
+        }
+
         fetch("http://localhost:8080/resource/page?page=0&size=10", {
             method: "GET",
             headers: {
                 "Authorization": token
             }
-        }).then(res => res.json()).then(data => {
-            let list = document.getElementById("list");
-            list.innerHTML = "";
+        })
+            .then(res => res.json())
+            .then(data => {
+                let list = document.getElementById("list");
+                list.innerHTML = "";
 
-            data.data.content.forEach(item => {
-                let div = document.createElement("div");
-                div.className = "resource-item";
-                div.innerHTML = `
-                <b>${item.title}</b><br>
-                类型：${item.type} ｜ 状态：${item.status}
-            `;
-                list.appendChild(div);
+                data.data.content.forEach(item => {
+                    let div = document.createElement("div");
+                    div.className = "resource-item";
+                    div.innerHTML = `
+                    <b>${item.title}</b><br>
+                    类型：${item.type} ｜ 状态：${item.status}
+                `;
+                    list.appendChild(div);
+                });
             });
-        });
     }
 
 </script>
