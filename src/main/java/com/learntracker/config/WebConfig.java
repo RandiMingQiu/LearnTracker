@@ -4,13 +4,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
 
-        registry.addInterceptor(new JwtInterceptor())
-                .addPathPatterns("/**");
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+
+            registry.addInterceptor(new JwtInterceptor())
+                    .addPathPatterns("/**")
+                    .excludePathPatterns(
+                            "/user/login",
+                            "/user/register",
+                            "/error",        // 👈 必须加‼️
+                            "/**/*.html",
+                            "/**/*.js",
+                            "/**/*.css"
+                    );
+        }
     }
-}
