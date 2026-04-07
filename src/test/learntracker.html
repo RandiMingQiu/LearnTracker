@@ -140,7 +140,7 @@
             console.log("返回：", data);
 
             if (data.code !== 200) {
-                alert("登录失败：" + data.message);
+                alert("登录失败：" + data.msg || data.messages);
                 return;
             }
 
