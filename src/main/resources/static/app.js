@@ -1,3 +1,5 @@
+//浏览器打开：http://localhost:8080/index.html
+
 const BASE_URL = "http://localhost:8080";
 
 // 页面跳转
@@ -81,3 +83,119 @@ async function register() {
         alert("网络错误，请检查后端 ❌");
     }
 }
+
+//请求
+async function request(url, method = "GET", body = null) {
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
+
+    try {
+        const res = await fetch("http://localhost:8080" + url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token || ""
+            },
+            body: body ? JSON.stringify(body) : null
+        });
+
+        const data = await res.json();
+
+        if (data.code !== 200) {
+            throw new Error(data.message || "请求失败");
+        }
+
+        return data.data;
+
+    } catch (err) {
+        alert(err.message);
+        throw err;
+    }
+}
+
+//标签模块
+async function loadTags() {
+    const tags = await request("/tag");
+
+    const list = document.getElementById("tagList");
+    list.innerHTML = "";
+
+    tags.forEach(tag => {
+        list.innerHTML += `
+            <li>
+                ${tag.name}
+                <button onclick="deleteTag(${tag.id})">删除</button>
+            </li>
+        `;
+    });
+}
+
+async function addTag() {
+    const name = document.getElementById("tagName").value;
+
+    await request("/tag", "POST", { name });
+
+    alert("添加成功");
+    loadTags();
+}
+
+async function deleteTag(id) {
+    await request(`/tag/${id}`, "DELETE");
+
+    alert("删除成功");
+    loadTags();
+}
+
+//Resource模块
+async function loadResources() {
+    const page = await request("/resource/page?page=0&size=10");
+
+    const list = document.getElementById("resourceList");
+    list.innerHTML = "";
+
+    page.content.forEach(r => {
+        const tagNames = r.tags.map(t => t.name).join(", ");
+
+        list.innerHTML += `
+            <li>
+                <b>${r.title}</b> (${r.type})<br>
+                标签: ${tagNames}<br>
+                <a href="${r.url}" target="_blank">访问</a>
+                <button onclick="deleteResource(${r.id})">删除</button>
+            </li>
+        `;
+    });
+}
+
+async function addResource() {
+    const title = document.getElementById("title").value;
+    const url = document.getElementById("url").value;
+    const type = document.getElementById("type").value;
+    const status = document.getElementById("status").value;
+
+    await request("/resource", "POST", {
+        title,
+        url,
+        type,
+        status,
+        tagIds: [] // 👉 先空，后面再升级
+    });
+
+    alert("添加成功");
+    loadResources();
+}
+
+async function deleteResource(id) {
+    await request(`/resource/${id}`, "DELETE");
+
+    alert("删除成功");
+    loadResources();
+}
+
+//标签显示
+window.onload = function () {
+    loadTags();
+    loadResources();
+};
+
+
+
