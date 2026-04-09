@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>LearnTracker Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont;
+            background: linear-gradient(135deg, #e0e7ff, #f8fafc);
+        }
+
+        /* 布局 */
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 玻璃风 */
+        .glass {
+            backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.6);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* 左右栏 */
+        .sidebar {
+            width: 30%;
+            overflow-y: auto;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* 通用 */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            border-radius: 10px;
+            border: none;
+        }
+
+        button {
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            margin-top: 6px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 首页 -->
+<div id="home" style="display:flex;justify-content:center;align-items:center;height:100vh">
+    <div class="glass">
+        <h2>📚 LearnTracker</h2>
+        <button onclick="showLogin()">登录</button>
+        <button onclick="showRegister()">注册</button>
+    </div>
+</div>
+
+<!-- 登录 -->
+<div id="loginPage" class="hidden" style="display:flex;justify-content:center;align-items:center;height:100vh">
+    <div class="glass">
+        <h3>登录</h3>
+        <input id="login_username" placeholder="用户名">
+        <input id="login_password" placeholder="密码">
+        <button onclick="login()">登录</button>
+        <button onclick="backHome()">返回</button>
+    </div>
+</div>
+
+<!-- 注册 -->
+<div id="registerPage" class="hidden" style="display:flex;justify-content:center;align-items:center;height:100vh">
+    <div class="glass">
+        <h3>注册</h3>
+        <input id="reg_username" placeholder="用户名">
+        <input id="reg_password" placeholder="密码">
+        <input id="reg_email" placeholder="邮箱">
+        <button onclick="register()">注册</button>
+        <button onclick="backHome()">返回</button>
+    </div>
+</div>
+
+<!-- 主页面 -->
+<div id="mainPage" class="hidden layout">
+
+    <!-- 左侧：资源 -->
+    <div class="sidebar glass">
+        <h3>📦 资源</h3>
+
+        <input id="title" placeholder="标题">
+        <input id="type" placeholder="类型">
+        <input id="url" placeholder="链接">
+        <input id="status" placeholder="状态">
+
+        <button onclick="addResource()">新增资源</button>
+        <button onclick="listResource()">刷新</button>
+
+        <div id="resourceList"></div>
+    </div>
+
+    <!-- 右侧：笔记 -->
+    <div class="content glass">
+        <h3>📝 笔记</h3>
+
+        <div id="noteSection" class="hidden">
+            <input id="noteContent" placeholder="输入笔记">
+            <button onclick="addNote()">新增笔记</button>
+        </div>
+
+        <div id="noteList"></div>
+
+        <button onclick="logout()">退出登录</button>
+    </div>
+
+</div>
+
+<script>
+
+    let token = localStorage.getItem("token");
+    let currentResourceId = null;
+
+    window.onload = function() {
+        if (token) showMain();
+    };
+
+    // 页面切换
+    function showLogin() {
+        home.style.display = "none";
+        loginPage.classList.remove("hidden");
+    }
+
+    function showRegister() {
+        home.style.display = "none";
+        registerPage.classList.remove("hidden");
+    }
+
+    function backHome() {
+        loginPage.classList.add("hidden");
+        registerPage.classList.add("hidden");
+        home.style.display = "flex";
+    }
+
+    function showMain() {
+        home.style.display = "none";
+        loginPage.classList.add("hidden");
+        registerPage.classList.add("hidden");
+        mainPage.classList.remove("hidden");
+
+        listResource();
+    }
+
+    // 注册
+    function register() {
+        axios.post("http://localhost:8080/user/register", {
+            username: reg_username.value,
+            password: reg_password.value,
+            email: reg_email.value
+        }).then(() => {
+            alert("注册成功");
+            showLogin();
+        });
+    }
+
+    // 登录
+    function login() {
+        axios.post("http://localhost:8080/user/login", {
+            username: login_username.value,
+            password: login_password.value
+        }).then(res => {
+            token = res.data.data.token;
+            localStorage.setItem("token", token);
+            showMain();
+        });
+    }
+
+    // 资源列表
+    function listResource() {
+        axios.get("http://localhost:8080/resource/page?page=0&size=10", {
+            headers: { Authorization: token }
+        }).then(res => {
+
+            let list = document.getElementById("resourceList");
+            list.innerHTML = "";
+
+            res.data.data.content.forEach(item => {
+                let div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `<b>${item.title}</b><br>${item.type}`;
+                div.onclick = () => loadNotes(item.id);
+                list.appendChild(div);
+            });
+        });
+    }
+
+    // 新增资源
+    function addResource() {
+        axios.post("http://localhost:8080/resource", {
+            title: title.value,
+            type: type.value,
+            url: url.value,
+            status: status.value
+        }, {
+            headers: { Authorization: token }
+        }).then(() => {
+            listResource();
+        });
+    }
+
+    // 加载笔记（核心🔥）
+    function loadNotes(resourceId) {
+        currentResourceId = resourceId;
+
+        noteSection.classList.remove("hidden");
+
+        axios.get(`http://localhost:8080/note/resource/${resourceId}`, {
+            headers: { Authorization: token }
+        }).then(res => {
+
+            let list = document.getElementById("noteList");
+            list.innerHTML = "";
+
+            res.data.data.forEach(note => {
+                let div = document.createElement("div");
+                div.className = "item";
+                div.innerText = note.content;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    // 新增笔记
+    function addNote() {
+        axios.post("http://localhost:8080/note", {
+            resourceId: currentResourceId,
+            content: noteContent.value
+        }, {
+            headers: { Authorization: token }
+        }).then(() => {
+            loadNotes(currentResourceId);
+        });
+    }
+
+    // 退出
+    function logout() {
+        localStorage.removeItem("token");
+        location.reload();
+    }
+
+</script>
+
+</body>
+</html>
