@@ -1,23 +1,27 @@
 <div class="card">
-    <h2>欢迎 👋</h2>
 
-    <!-- 新增标签 -->
-    <input id="tagName" placeholder="新标签">
-    <button onclick="addTag()">添加标签</button>
+    <h3>标签</h3>
+    <input id="tagName" placeholder="标签">
+    <button onclick="addTag()">添加</button>
+    <ul id="tagList" class="list"></ul>
 
-    <!-- 标签列表 -->
-    <ul id="tagList"></ul>
-
-    <hr>
-
-    <!-- 新增资源 -->
+    <h3>资源</h3>
     <input id="title" placeholder="标题">
     <input id="url" placeholder="链接">
     <input id="type" placeholder="类型">
     <input id="status" placeholder="状态">
 
-    <button onclick="addResource()">添加资源</button>
+    <select id="tagSelect" multiple></select>
 
-    <!-- 资源列表 -->
-    <ul id="resourceList"></ul>
+    <button onclick="addResource()">添加资源</button>
+    <ul id="resourceList" class="list"></ul>
+
+    <h3>笔记</h3>
+    <input id="noteContent" placeholder="笔记">
+    <button onclick="addNote()">添加笔记</button>
+    <ul id="noteList"></ul>
+
 </div>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
