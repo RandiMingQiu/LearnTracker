@@ -1,29 +1,94 @@
-<div class="card">
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/style.css">
 
-    <h3>标签</h3>
-    <input id="tagName" placeholder="标签">
-    <button onclick="addTag()">添加</button>
-    <ul id="tagList" class="list"></ul>
+    <style>
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
 
-    <h3>资源</h3>
-    <input id="title" placeholder="标题">
-    <input id="url" placeholder="链接">
-    <input id="type" placeholder="类型">
-    <input id="status" placeholder="状态">
+        /* 左侧 */
+        .sidebar {
+            width: 220px;
+            background: #fff;
+            padding: 15px;
+            border-right: 1px solid #eee;
+        }
 
-    <select id="tagSelect" multiple></select>
+        /* 中间 */
+        .main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
 
-    <button onclick="addResource()">添加资源</button>
-    <ul id="resourceList" class="list"></ul>
+        /* 右侧 */
+        .notes {
+            width: 300px;
+            background: #fafafa;
+            padding: 15px;
+            border-left: 1px solid #eee;
+        }
 
-    <h3>笔记</h3>
-    <input id="noteContent" placeholder="笔记">
-    <button onclick="addNote()">添加笔记</button>
-    <ul id="noteList"></ul>
+        .item {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            background: #f0f0f0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- 左：标签 -->
+    <div class="sidebar">
+        <h3>标签</h3>
+        <input id="tagName" placeholder="新标签">
+        <button onclick="addTag()">添加</button>
+        <div id="tagList"></div>
+    </div>
+
+    <!-- 中：资源 -->
+    <div class="main">
+        <h2>资源</h2>
+
+        <input id="title" placeholder="标题">
+        <input id="url" placeholder="链接">
+        <input id="type" placeholder="类型">
+        <input id="status" placeholder="状态">
+
+        <select id="tagSelect" multiple></select>
+        <button onclick="addResource()">添加资源</button>
+
+        <div id="resourceList"></div>
+    </div>
+
+    <!-- 右：笔记 -->
+    <div class="notes">
+        <h3>笔记</h3>
+
+        <input id="noteContent" placeholder="输入笔记">
+        <button onclick="addNote()">添加</button>
+
+        <div id="noteList"></div>
+    </div>
 
 </div>
 
 <script src="js/api.js"></script>
 <script src="js/dashboard.js"></script>
+
+</body>
+</html>

@@ -15,11 +15,11 @@ async function loadTags() {
 
     tags.forEach(t => {
         tagList.innerHTML += `
-            <li>
+            <div class="item">
                 ${t.name}
-                <button onclick="editTag(${t.id},'${t.name}')">改</button>
-                <button onclick="deleteTag(${t.id})">删</button>
-            </li>`;
+                <button onclick="deleteTag(${t.id})">x</button>
+            </div>
+        `;
     });
 
     renderTagOptions(tags);
@@ -59,15 +59,15 @@ async function loadResources() {
     resourceList.innerHTML = "";
 
     page.content.forEach(r => {
-        const tags = r.tags.map(t => t.name).join(",");
+        const tags = r.tags.map(t => t.name).join(", ");
 
         resourceList.innerHTML += `
-            <li>
-                <b onclick="loadNotes(${r.id})">${r.title}</b><br>
-                ${tags}<br>
-                <button onclick="editResource(${r.id})">改</button>
-                <button onclick="deleteResource(${r.id})">删</button>
-            </li>`;
+            <div class="item" onclick="loadNotes(${r.id})">
+                <b>${r.title}</b><br>
+                <small>${tags}</small><br>
+                <button onclick="event.stopPropagation();deleteResource(${r.id})">删除</button>
+            </div>
+        `;
     });
 }
 
@@ -119,10 +119,25 @@ async function loadNotes(resourceId) {
 }
 
 async function addNote() {
+
+    if (!currentResourceId) {
+        alert("请先点击一个资源再添加笔记 ❗");
+        return;
+    }
+
+    const content = noteContent.value;
+
+    if (!content) {
+        alert("内容不能为空");
+        return;
+    }
+
     await request("/note", "POST", {
         resourceId: currentResourceId,
-        content: noteContent.value
+        content
     });
+
+    noteContent.value = "";
     loadNotes(currentResourceId);
 }
 
