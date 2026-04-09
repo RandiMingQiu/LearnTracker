@@ -1,3 +1,4 @@
+//http://localhost:8080/index.html
 async function login() {
     const username = usernameInput.value;
     const password = passwordInput.value;
@@ -20,9 +21,10 @@ async function login() {
 }
 
 async function register() {
-    const username = usernameInput.value;
+    const username = document.getElementById("usernameInput").value;
+    const password = document.getElementById("passwordInput").value;
     const email = emailInput.value;
-    const password = passwordInput.value;
+    //const password = passwordInput.value;
 
     const res = await fetch("http://localhost:8080/user/register", {
         method: "POST",
