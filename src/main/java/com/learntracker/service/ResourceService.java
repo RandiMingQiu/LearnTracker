@@ -1,6 +1,7 @@
 package com.learntracker.service;
 
 import com.learntracker.dto.ResourceDTO;
+import com.learntracker.entity.Resource;
 import org.springframework.data.domain.Page;
 
 public interface ResourceService {
@@ -11,6 +12,10 @@ public interface ResourceService {
 
     void delete(Long id);
 
-    Page<?> page(int page, int size, String status);
-}
+    // 🔥 分页（带 tag 筛选）
+    Page<?> page(int page, int size, String status, Long tagId);
 
+    // 🔥 详情接口（新增）
+    Resource detail(Long id);
+    Resource getById(Long id);
+}

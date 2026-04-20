@@ -3,26 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/style.css">
-    <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Login - LearnTracker</title>
 </head>
-
 <body class="center">
-
 <div class="card">
-
-    <h2>Login</h2>
-
-    <input id="usernameInput" placeholder="Username">
-    <input id="passwordInput" type="password" placeholder="Password">
-
-    <button onclick="login()">Login</button>
-    <button class="secondary" onclick="location.href='index.html'">Back</button>
-
+    <h2>登录</h2>
+    <input id="usernameInput" placeholder="请输入用户名" type="text">
+    <input id="passwordInput" placeholder="请输入密码" type="password">
+    <button onclick="login()">登录</button>
+    <button class="secondary" onclick="location.href='index.html'">返回首页</button>
 </div>
-
-<!-- ❗必须有 -->
 <script src="js/auth.js"></script>
-
 </body>
 </html>

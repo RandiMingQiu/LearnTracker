@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/style.css">
-  <title>Register</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Register - LearnTracker</title>
 </head>
 <body class="center">
-
 <div class="card">
-  <h2>Register</h2>
-
-  <input id="username" placeholder="Username">
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="register()">Register</button>
-  <button onclick="goHome()" class="secondary">Back</button>
+  <h2>注册账号</h2>
+  <input id="username" placeholder="请输入用户名" type="text">
+  <input id="email" placeholder="请输入邮箱" type="email">
+  <input id="password" placeholder="请输入密码" type="password">
+  <button onclick="register()">注册</button>
+  <button class="secondary" onclick="goHome()">返回首页</button>
 </div>
 
-<script src="js/api.js"></script>
+<script>
+  function goHome() {
+    location.href = "index.html";
+  }
+</script>
+<script src="js/auth.js"></script>
 </body>
 </html>
