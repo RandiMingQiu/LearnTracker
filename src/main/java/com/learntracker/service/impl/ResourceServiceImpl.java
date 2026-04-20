@@ -64,9 +64,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Page<?> page(int page, int size, String status) {
+    public Page<?> page(int page, int size, String status, Long tagId) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        if (tagId != null) {
+            return resourceRepository.findByTagId(tagId, pageable);
+        }
 
         if (status != null) {
             return resourceRepository.findByStatus(status, pageable);
@@ -74,4 +78,12 @@ public class ResourceServiceImpl implements ResourceService {
 
         return resourceRepository.findAll(pageable);
     }
+
+
+    @Override
+    public Resource detail(Long id) {
+        return resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("资源不存在"));
+    }
+
 }
