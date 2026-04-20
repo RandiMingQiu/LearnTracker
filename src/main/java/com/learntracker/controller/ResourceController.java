@@ -27,10 +27,6 @@ public class ResourceController {
         return Result.success();
     }
 
-    @GetMapping("/{id}")
-    public Result<Resource> detail(@PathVariable Long id) {
-        return Result.success(resourceService.detail(id));
-    }
 
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
