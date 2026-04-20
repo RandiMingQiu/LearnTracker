@@ -1,12 +1,10 @@
+# 主配置文件，全部公共配置，无密码！可以安全上传GitHub
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/learntracker
-    username: postgres
-    password: Hong1008
-    driver-class-name: org.postgresql.Driver
+  # 激活本地专属配置文件 application-local.yaml
+  profiles:
+    active: local
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
+jpa:
+  hibernate:
+    ddl-auto: update
+  show-sql: true
