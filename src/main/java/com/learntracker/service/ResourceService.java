@@ -17,4 +17,5 @@ public interface ResourceService {
 
     // 🔥 详情接口（新增）
     Resource detail(Long id);
+    Resource getById(Long id);
 }

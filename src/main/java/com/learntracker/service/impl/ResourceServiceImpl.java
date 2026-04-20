@@ -79,6 +79,11 @@ public class ResourceServiceImpl implements ResourceService {
         return resourceRepository.findAll(pageable);
     }
 
+    @Override
+    public Resource getById(Long id) {
+        return resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("资源不存在"));
+    }
 
     @Override
     public Resource detail(Long id) {

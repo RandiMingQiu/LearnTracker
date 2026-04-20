@@ -38,6 +38,14 @@ public class ResourceController {
         return Result.success();
     }
 
+    @GetMapping("/{id}")
+    public Result<Resource> getById(@PathVariable Long id) {
+        Resource resource = resourceService.getById(id);
+        if (resource == null) {
+            return Result.fail("资源不存在");
+        }
+        return Result.success(resource);
+    }
 
     @GetMapping("/page")
     public Result<?> page(
