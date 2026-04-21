@@ -28,15 +28,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginVO login(LoginDTO dto) {
+
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
+                .orElse(null);
+
+        if (user == null) {
+            throw new RuntimeException("用户名不存在");
+        }
 
         if (!BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
             throw new RuntimeException("密码错误");
         }
 
         String token = JwtUtil.generateToken(user.getUsername());
-        System.out.println("token = " + token);
         return new LoginVO(token);
     }
 
