@@ -1,10 +1,13 @@
 package com.learntracker.controller;
 
+import org.springframework.data.domain.Page;
 import com.learntracker.common.result.Result;
 import com.learntracker.dto.ResourceDTO;
+import com.learntracker.entity.StatusEnum;
 import com.learntracker.service.ResourceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import com.learntracker.entity.Resource;
 
@@ -44,12 +47,13 @@ public class ResourceController {
     }
 
     @GetMapping("/page")
-    public Result<?> page(
-            @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam(required = false) String status,
+    public Result page(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(required = false) StatusEnum status,
             @RequestParam(required = false) Long tagId
     ) {
-        return Result.success(resourceService.page(page, size, status, tagId));
+        Page<Resource> result = resourceService.page(page, size, status, tagId);
+        return Result.success(result);
     }
 }

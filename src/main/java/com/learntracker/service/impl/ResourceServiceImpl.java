@@ -82,19 +82,21 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Page<?> page(int page, int size, String status, Long tagId) {
-
+    public Page<Resource> page(Integer page, Integer size, StatusEnum status, Long tagId) {
         Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Resource> resourcePage;
 
-        if (tagId != null) {
-            return resourceRepository.findByTagId(tagId, pageable);
+        if (status != null && tagId != null) {
+            resourcePage = resourceRepository.findByStatusAndTags_Id(status, tagId, pageable);
+        } else if (status != null) {
+            resourcePage = resourceRepository.findByStatus(status, pageable);
+        } else if (tagId != null) {
+            resourcePage = resourceRepository.findByTagId(tagId, pageable);
+        } else {
+            resourcePage = resourceRepository.findAll(pageable);
         }
 
-        if (status != null) {
-            return resourceRepository.findByStatus(status, pageable);
-        }
-
-        return resourceRepository.findAll(pageable);
+        return resourcePage;
     }
 
     @Override//查询搜索

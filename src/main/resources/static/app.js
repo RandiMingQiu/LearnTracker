@@ -235,7 +235,7 @@ async function loadResources(page = 1) {
 
 function filterStatus(s) {
     currentStatus = s;
-    loadResources(1);
+    loadResources(1); // 重置到第1页
 }
 
 function filterTag(id) {
