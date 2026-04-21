@@ -7,19 +7,18 @@ import java.util.List;
 
 @Data
 public class ResourceDTO {
-
-    @NotBlank
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     private String description;
 
-    @NotBlank
+    @NotBlank(message = "类型不能为空")
     private String type;
 
-    @NotBlank
+    @NotBlank(message = "URL不能为空")
     private String url;
 
-    private String status;
+    private String status; // 依旧用String接收前端字符串，后端转枚举
 
     private List<Long> tagIds;
 }

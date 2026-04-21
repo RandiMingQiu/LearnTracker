@@ -1,5 +1,6 @@
 package com.learntracker.service.impl;
 
+import com.learntracker.entity.StatusEnum;
 import com.learntracker.dto.ResourceDTO;
 import com.learntracker.entity.Resource;
 import com.learntracker.entity.Tag;
@@ -9,7 +10,6 @@ import com.learntracker.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,15 +24,24 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void create(ResourceDTO dto) {
-
         Resource resource = new Resource();
         resource.setTitle(dto.getTitle());
         resource.setDescription(dto.getDescription());
         resource.setType(dto.getType());
         resource.setUrl(dto.getUrl());
-        resource.setStatus(dto.getStatus());
         resource.setCreateTime(LocalDateTime.now());
         resource.setUpdateTime(LocalDateTime.now());
+
+        // ====================== 新增默认值赋值 ======================
+        // 优先用前端传过来的状态，如果前端没传，默认设置为 TODO 待学习
+        if(dto.getStatus() != null){
+            // 字符串转枚举
+            resource.setStatus(StatusEnum.valueOf(dto.getStatus()));
+        }else{
+            // 默认状态：待学习
+            resource.setStatus(StatusEnum.TODO);
+        }
+
 
         if (dto.getTagIds() != null) {
             List<Tag> tags = tagRepository.findAllById(dto.getTagIds());
@@ -52,7 +61,6 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setDescription(dto.getDescription());
         resource.setType(dto.getType());
         resource.setUrl(dto.getUrl());
-        resource.setStatus(dto.getStatus());
         resource.setUpdateTime(LocalDateTime.now());
 
         resourceRepository.save(resource);
