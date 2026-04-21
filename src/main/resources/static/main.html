@@ -11,202 +11,233 @@
             font-family: "Microsoft YaHei", sans-serif;
         }
         body {
-            background-color: #f7f9fc;
-            padding: 30px 25px;
+            background-color: #f5f7fa;
+            padding: 30px 20px;
         }
         /* 主标题 */
         .main-title {
             text-align: center;
-            font-size: 46px;
+            font-size: 48px;
             font-weight: bold;
-            color: #1a237e;
+            color: #2d3748;
             margin-bottom: 8px;
         }
         .sub-title {
             text-align: center;
             font-size: 16px;
-            color: #666;
-            margin-bottom: 45px;
+            color: #718096;
+            margin-bottom: 40px;
         }
         /* 顶部导航按钮 */
         .top-bar {
-            max-width: 1100px;
-            margin: 0 auto 35px;
+            max-width: 1200px;
+            margin: 0 auto 30px;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
         }
-        .top-bar button {
-            padding: 12px 24px;
+        /* 全局按钮美化 */
+        button {
+            padding: 10px 18px;
             border: none;
             border-radius: 8px;
-            background-color: #3949ab;
-            color: white;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
-        .top-bar button:hover {
-            background-color: #283593;
-        }
+        /* 按钮配色体系 */
+        .btn-primary { background: #4299e1; color: white; }
+        .btn-success { background: #38a169; color: white; }
+        .btn-warning { background: #ed8936; color: white; }
+        .btn-danger { background: #e53e3e; color: white; }
+        .btn-purple { background: #805ad5; color: white; }
+        .btn-default { background: #718096; color: white; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:disabled { background: #e2e8f0; color: #a0aec0; cursor: not-allowed; transform: none; }
+
         /* 内容容器 */
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         .card {
             background: white;
-            padding: 30px;
+            padding: 25px 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
         .card h3 {
-            font-size: 26px;
-            color: #263238;
+            font-size: 28px;
+            color: #2d3748;
             margin-bottom: 25px;
-            border-left: 6px solid #3949ab;
+            border-left: 6px solid #4299e1;
             padding-left: 14px;
         }
-        /* 筛选栏 */
+
+        /* 筛选栏：水平并排 */
         .filter-bar {
-            margin: 20px 0;
             display: flex;
-            gap: 25px;
             align-items: center;
+            gap: 15px;
             flex-wrap: wrap;
+            margin-bottom: 25px;
         }
+        .filter-bar label { font-weight: 500; color: #4a5568; }
         .filter-bar select {
-            padding: 10px 15px;
-            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             outline: none;
-            font-size: 14px;
         }
-        /* ===================== 资源列表优化 ===================== */
-        .resource-item {
-            padding: 22px;
-            border-radius: 10px;
-            margin: 15px 0;
+
+        /* 资源卡片网格 */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+        /* 资源卡片样式 */
+        .resource-card {
             background: #ffffff;
-            border: 1px solid #f0f0f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            transition: 0.2s;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #edf2f7;
+            transition: all 0.3s ease;
         }
-        .resource-item:hover {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        .resource-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
         .resource-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
-            color: #263238;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: #2d3748;
         }
-        /* 状态标签（彩色高亮） */
-        .status-tag {
+        /* 状态标签 */
+        .status {
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
         }
-        .status-todo { background: #fff3e0; color: #f57c00; }
-        .status-learning { background: #e3f2fd; color: #1976d2; }
-        .status-done { background: #e8f5e9; color: #388e3c; }
+        .status-todo { background: #fef5e7; color: #d97706; }
+        .status-learning { background: #ebf8ff; color: #0369a1; }
+        .status-done { background: #ecfdf5; color: #065f46; }
         .resource-desc {
-            color: #666;
-            margin: 8px 0;
+            color: #718096;
             line-height: 1.5;
+            margin: 10px 0;
+            font-size: 14px;
         }
         .resource-link {
-            color: #3949ab;
+            color: #4299e1;
             text-decoration: none;
+            font-size: 14px;
             margin: 8px 0;
             display: inline-block;
         }
-        /* ===================== 标签美化（核心！） ===================== */
+        /* 资源内标签组 */
         .tag-group {
-            margin: 10px 0;
             display: flex;
-            gap: 8px;
             flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0;
         }
         .tag {
-            padding: 5px 12px;
+            padding: 4px 10px;
+            background: #e6fffa;
+            color: #0d9488;
             border-radius: 20px;
             font-size: 12px;
-            background: #e8eaf6;
-            color: #3949ab;
-            font-weight: 500;
         }
-        /* 按钮样式统一 */
-        .btn-group {
-            margin-top: 15px;
+        /* 卡片按钮组 */
+        .card-btn-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            margin-top: 15px;
         }
-        .btn {
-            padding: 7px 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
+
+        /* ===================== 标签管理卡片式排版（核心优化） ===================== */
+        .tag-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
         }
-        .btn-edit { background: #3949ab; color: white; }
-        .btn-del { background: #e53935; color: white; }
-        .btn-note { background: #7e57c2; color: white; }
+        /* 标签独立卡片 */
+        .tag-item-card {
+            background: #ffffff;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        .tag-item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+            border-color: #4299e1;
+        }
+        /* 标签名称样式 */
+        .tag-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 12px;
+            padding: 6px 12px;
+            background: #e6fffa;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        /* 标签添加区域 */
+        .tag-add-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
         /* 分页 */
         .pagination {
-            margin-top: 30px;
             display: flex;
-            gap: 10px;
             align-items: center;
-        }
-        .pagination button {
-            padding: 8px 18px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .pagination button:disabled {
-            background: #f5f5f5;
-            color: #999;
-            cursor: not-allowed;
+            gap: 10px;
+            margin-top: 30px;
         }
         /* 表单样式 */
         input, textarea, select {
             width: 100%;
             max-width: 500px;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #e0e0e0;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             outline: none;
-        }
-        .form-btn {
-            padding: 10px 22px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #3949ab;
-            color: white;
         }
     </style>
 </head>
 <body>
 <h1 class="main-title">学习资源管理中心</h1>
-<p class="sub-title">高效管理你的学习资源、标签与笔记</p>
+<p class="sub-title">最新修改优先展示 | 卡片式管理</p>
 
 <div class="top-bar">
-    <button onclick="loadResources()">📚 资源管理</button>
-    <button onclick="loadTags()">🏷️ 标签管理</button>
-    <button onclick="getUser()">👤 个人信息</button>
-    <button onclick="logout()">🚪 退出登录</button>
+    <button class="btn-primary" onclick="loadResources()">📚 资源管理</button>
+    <button class="btn-success" onclick="loadTags()">🏷️ 标签管理</button>
+    <button class="btn-purple" onclick="getUser()">👤 个人信息</button>
+    <button class="btn-danger" onclick="logout()">🚪 退出登录</button>
 </div>
 
 <div class="container">

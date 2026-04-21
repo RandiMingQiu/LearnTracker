@@ -12,6 +12,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -32,13 +33,11 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setCreateTime(LocalDateTime.now());//创建时间
         resource.setUpdateTime(LocalDateTime.now());//更新时间
 
-        // ====================== 新增默认值赋值 ======================
-        // 优先用前端传过来的状态，如果前端没传，默认设置为 TODO 待学习
+        // 优先用前端传过来的状态，如果前端没传，默认设置为 TODO
         if(dto.getStatus() != null){
             // 字符串转枚举
             resource.setStatus(StatusEnum.valueOf(dto.getStatus()));
         }else{
-            // 默认状态：待学习
             resource.setStatus(StatusEnum.TODO);
         }
 
@@ -81,22 +80,20 @@ public class ResourceServiceImpl implements ResourceService {
         resourceRepository.deleteById(id);
     }
 
-    @Override
+    @Override// 排序，按更新时间 降序（最新修改的在最上面）和分页显示
     public Page<Resource> page(Integer page, Integer size, StatusEnum status, Long tagId) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Resource> resourcePage;
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "updateTime"));
 
         if (status != null && tagId != null) {
-            resourcePage = resourceRepository.findByStatusAndTags_Id(status, tagId, pageable);
+            return resourceRepository.findByStatusAndTags_Id(status, tagId, pageable);
         } else if (status != null) {
-            resourcePage = resourceRepository.findByStatus(status, pageable);
+            return resourceRepository.findByStatus(status, pageable);
         } else if (tagId != null) {
-            resourcePage = resourceRepository.findByTagId(tagId, pageable);
+            return resourceRepository.findByTagId(tagId, pageable);
         } else {
-            resourcePage = resourceRepository.findAll(pageable);
+            return resourceRepository.findAll(pageable);
         }
-
-        return resourcePage;
     }
 
     @Override//查询搜索
