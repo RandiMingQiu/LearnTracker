@@ -4,19 +4,34 @@
     <meta charset="UTF-8">
     <title>LearnTracker</title>
 </head>
+
 <body>
 
-<h2>主页</h2>
+<h2>LearnTracker</h2>
 
+<button onclick="logout()">退出登录</button>
 <button onclick="getUser()">当前用户</button>
-<button onclick="loadResources()">资源</button>
-<button onclick="loadTags()">标签</button>
+<button onclick="init()">资源中心</button>
+<button onclick="loadTags()">标签管理</button>
 
 <hr>
 
 <div id="content"></div>
 
 <script src="app.js"></script>
+
+<script>
+    // 页面加载自动检测登录
+    window.onload = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("请先登录");
+            location.href = "index.html";
+        } else {
+            init();
+        }
+    }
+</script>
 
 </body>
 </html>

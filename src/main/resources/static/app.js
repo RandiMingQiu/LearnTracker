@@ -6,9 +6,7 @@ async function request(url, method = "GET", data = null) {
 
     const options = {
         method,
-        headers: {
-            "Content-Type": "application/json"
-        }
+        headers: { "Content-Type": "application/json" }
     };
 
     if (token) options.headers["Authorization"] = token;
@@ -18,8 +16,7 @@ async function request(url, method = "GET", data = null) {
         const res = await fetch(BASE_URL + url, options);
 
         if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`HTTP ${res.status}：${text}`);
+            throw new Error(`HTTP ${res.status}`);
         }
 
         const result = await res.json();
@@ -36,53 +33,61 @@ async function request(url, method = "GET", data = null) {
     }
 }
 
-// ================= 用户 =================
+// ================= 登录注册 =================
 async function login() {
-    const username = document.getElementById("loginUsername").value;
-    const password = document.getElementById("loginPassword").value;
-
     try {
         const data = await request("/user/login", "POST", {
-            username,
-            password
+            username: loginUsername.value,
+            password: loginPassword.value
         });
 
         localStorage.setItem("token", data.token);
-
         alert("登录成功");
         location.href = "main.html";
 
-    } catch (e) {
-        console.error(e);
-    }
+    } catch (e) {}
 }
 
 async function register() {
-    const username = document.getElementById("regUsername").value;
-    const password = document.getElementById("regPassword").value;
-    const email = document.getElementById("regEmail").value;
-
     try {
         await request("/user/register", "POST", {
-            username,
-            password,
-            email
+            username: regUsername.value,
+            password: regPassword.value,
+            email: regEmail.value
         });
 
-        alert("注册成功");
+        alert("注册成功，请登录");
 
-    } catch (e) {
-        console.error(e);
-    }
+    } catch (e) {}
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    location.href = "index.html";
+}
+
+// ================= 用户 =================
+async function getUser() {
+    const user = await request("/user/me");
+    alert("当前用户：" + user);
+}
+
+// ================= 初始化 =================
+function init() {
+    loadTags().then(() => loadResources());
 }
 
 // ================= 标签 =================
 let tagList = [];
 
 async function loadTags() {
-    tagList = await request("/tag");
+    tagList = await request("/tag") || [];
 
     let html = "<h3>标签管理</h3>";
+
+    if (tagList.length === 0) {
+        html += "暂无标签<br>";
+    }
 
     tagList.forEach(t => {
         html += `
@@ -102,8 +107,7 @@ async function loadTags() {
 }
 
 async function addTag() {
-    const name = document.getElementById("tagName").value;
-    await request("/tag", "POST", { name });
+    await request("/tag", "POST", { name: tagName.value });
     loadTags();
 }
 
@@ -121,7 +125,6 @@ async function loadResources(page = 1) {
     currentPage = page;
 
     let url = `/resource/page?page=${page}&size=5`;
-
     if (currentStatus) url += `&status=${currentStatus}`;
     if (currentTagId) url += `&tagId=${currentTagId}`;
 
@@ -129,12 +132,9 @@ async function loadResources(page = 1) {
 
     let html = `
         <h3>资源中心</h3>
+        <button onclick="showAddResource()">新增资源</button><br><br>
 
-        <button onclick="showAddResource()">新增资源</button>
-
-        <br><br>
-
-        状态筛选：
+        状态：
         <select onchange="filterStatus(this.value)">
             <option value="">全部</option>
             <option value="TODO">TODO</option>
@@ -142,7 +142,7 @@ async function loadResources(page = 1) {
             <option value="DONE">DONE</option>
         </select>
 
-        标签筛选：
+        标签：
         <select onchange="filterTag(this.value)">
             <option value="">全部</option>
             ${tagList.map(t => `<option value="${t.id}">${t.name}</option>`).join("")}
@@ -151,20 +151,20 @@ async function loadResources(page = 1) {
         <hr>
     `;
 
+    if (!data.content || data.content.length === 0) {
+        html += "暂无资源";
+    }
+
     data.content.forEach(r => {
         html += `
             <div>
                 <b>${r.title}</b> [${r.status}]
                 <br>${r.description || ""}
                 <br><a href="${r.url}" target="_blank">打开</a>
-
-                <br>
-                标签：${r.tags.map(t => t.name).join(", ")}
-
+                <br>标签：${(r.tags || []).map(t => t.name).join(", ")}
                 <br>
                 <button onclick="deleteResource(${r.id})">删</button>
                 <button onclick="loadNotes(${r.id})">笔记</button>
-
                 <hr>
             </div>
         `;
@@ -178,13 +178,13 @@ async function loadResources(page = 1) {
     document.getElementById("content").innerHTML = html;
 }
 
-function filterStatus(status) {
-    currentStatus = status;
+function filterStatus(s) {
+    currentStatus = s;
     loadResources(1);
 }
 
-function filterTag(tagId) {
-    currentTagId = tagId;
+function filterTag(id) {
+    currentTagId = id;
     loadResources(1);
 }
 
@@ -222,27 +222,22 @@ function showAddResource() {
         <br><br>
 
         <button onclick="addResource()">提交</button>
+        <button onclick="loadResources()">返回</button>
     `;
 
-    document.getElementById("content").innerHTML = html;
+    content.innerHTML = html;
 }
 
 async function addResource() {
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
-    const type = document.getElementById("type").value;
-    const url = document.getElementById("url").value;
-    const status = document.getElementById("status").value;
-
     const tagIds = [...document.querySelectorAll("input[type=checkbox]:checked")]
         .map(c => parseInt(c.value));
 
     await request("/resource", "POST", {
-        title,
-        description,
-        type,
-        url,
-        status,
+        title: title.value,
+        description: description.value,
+        type: type.value,
+        url: url.value,
+        status: status.value,
         tagIds
     });
 
@@ -252,9 +247,13 @@ async function addResource() {
 
 // ================= 笔记 =================
 async function loadNotes(resourceId) {
-    const notes = await request(`/note/resource/${resourceId}`);
+    const notes = await request(`/note/resource/${resourceId}`) || [];
 
-    let html = `<h3>笔记（资源ID：${resourceId}）</h3>`;
+    let html = `<h3>笔记</h3>`;
+
+    if (notes.length === 0) {
+        html += "暂无笔记<br>";
+    }
 
     notes.forEach(n => {
         html += `
@@ -268,19 +267,16 @@ async function loadNotes(resourceId) {
     html += `
         <textarea id="noteContent"></textarea><br>
         <button onclick="addNote(${resourceId})">新增</button>
-        <br><br>
-        <button onclick="loadResources()">返回资源</button>
+        <button onclick="loadResources()">返回</button>
     `;
 
-    document.getElementById("content").innerHTML = html;
+    content.innerHTML = html;
 }
 
 async function addNote(resourceId) {
-    const content = document.getElementById("noteContent").value;
-
     await request("/note", "POST", {
         resourceId,
-        content
+        content: noteContent.value
     });
 
     loadNotes(resourceId);
@@ -291,5 +287,21 @@ async function deleteNote(id, resourceId) {
     loadNotes(resourceId);
 }
 
+// ================= 关键：挂载到全局 =================
 window.login = login;
 window.register = register;
+window.logout = logout;
+window.getUser = getUser;
+window.init = init;
+window.loadTags = loadTags;
+window.loadResources = loadResources;
+window.deleteTag = deleteTag;
+window.addTag = addTag;
+window.filterStatus = filterStatus;
+window.filterTag = filterTag;
+window.deleteResource = deleteResource;
+window.showAddResource = showAddResource;
+window.addResource = addResource;
+window.loadNotes = loadNotes;
+window.addNote = addNote;
+window.deleteNote = deleteNote;
