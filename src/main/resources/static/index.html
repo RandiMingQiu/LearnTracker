@@ -2,68 +2,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/style.css">
-    <title>LearnTracker</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
-        }
-
-        .hero {
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-group button {
-            flex: 1;
-        }
-    </style>
+    <title>LearnTracker 登录</title>
 </head>
+<body>
 
-<body class="center">
+<h2>登录</h2>
+<input id="loginUsername" placeholder="用户名"><br>
+<input id="loginPassword" type="password" placeholder="密码"><br>
+<button onclick="login()">登录</button>
 
-<div class="card hero">
+<h2>注册</h2>
+<input id="regUsername" placeholder="用户名"><br>
+<input id="regPassword" type="password" placeholder="密码"><br>
+<input id="regEmail" placeholder="邮箱"><br>
+<button onclick="register()">注册</button>
 
-    <div class="logo">📘</div>
-
-    <h1>LearnTracker</h1>
-    <p>Track your knowledge. Build your system.</p>
-
-    <div class="btn-group">
-        <button onclick="location.href='login.html'">Login</button>
-        <button class="secondary" onclick="location.href='register.html'">Register</button>
-    </div>
-
-</div>
+<script src="app.js"></script>
 
 </body>
 </html>
