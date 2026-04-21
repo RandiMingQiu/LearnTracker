@@ -147,35 +147,46 @@
             margin: 8px 0;
             display: inline-block;
         }
-        /* 资源内标签组 */
-        .tag-group {
+
+        /* ===================== 强制生效：资源内嵌标签卡片样式 ===================== */
+        div[id="content"] .tag-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             margin: 12px 0;
         }
-        .tag {
-            padding: 4px 10px;
-            background: #e6fffa;
-            color: #0d9488;
-            border-radius: 20px;
+        /* 标签：强卡片效果，内嵌在资源里，绝对明显 */
+        div[id="content"] .tag-group span,
+        div[id="content"] .tag {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #ffffff !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 10px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
             font-size: 12px;
-        }
-        /* 卡片按钮组 */
-        .card-btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
+            color: #374151 !important;
         }
 
-        /* ===================== 标签管理卡片式排版（核心优化） ===================== */
+        /* ===================== 强制生效：资源内按钮缩小 ===================== */
+        /* 编辑/删除/笔记按钮 强制缩小，不依赖class */
+        div[id="content"] .resource-card button,
+        div[id="content"] button[onclick*="Edit"],
+        div[id="content"] button[onclick*="delete"],
+        div[id="content"] button[onclick*="notes"] {
+            padding: 3px 8px !important;
+            font-size: 11px !important;
+            border-radius: 5px !important;
+            margin-right: 5px !important;
+        }
+
+        /* 标签管理页面样式 */
         .tag-card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        /* 标签独立卡片 */
         .tag-item-card {
             background: #ffffff;
             border: 1px solid #edf2f7;
@@ -190,7 +201,6 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.06);
             border-color: #4299e1;
         }
-        /* 标签名称样式 */
         .tag-name {
             font-size: 16px;
             font-weight: 500;
@@ -201,7 +211,6 @@
             border-radius: 20px;
             display: inline-block;
         }
-        /* 标签添加区域 */
         .tag-add-box {
             margin-top: 25px;
             padding: 20px;
