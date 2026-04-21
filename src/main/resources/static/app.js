@@ -203,18 +203,20 @@ async function loadResources(page = 1) {
         if (!data || !data.content || data.content.length === 0) {
             html += "暂无资源";
         } else {
+            // 原资源项渲染代码
             data.content.forEach(r => {
                 html += `
-                    <div style="margin: 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 4px;">
-                        <b>${r.title || "无标题"}</b> [${r.status || "未知"}]
-                        <br>${r.description || "无描述"}
-                        <br><a href="${r.url}" target="_blank" style="color: #0066cc;">打开链接</a>                
-                        <br>标签：${(r.tags || []).map(t => t.name).join(", ") || "无"}
-                        <br>
-                        <button onclick="deleteResource(${r.id})" style="margin-top: 5px; margin-right: 5px;">删除</button>
-                        <button onclick="loadNotes(${r.id})" style="margin-top: 5px;">笔记</button>
-                    </div>
-                `;
+        <div style="margin: 10px 0; padding: 10px; border: 1px solid #eee; border-radius: 4px;">
+            <b>${r.title || "无标题"}</b> [${r.status || "未知"}]
+            <br>${r.description || "无描述"}
+            <br><a href="${r.url}" target="_blank" style="color: #0066cc;">打开链接</a>                
+            <br>标签：${(r.tags || []).map(t => t.name).join(", ") || "无"}
+            <br>
+            <button onclick="deleteResource(${r.id})" style="margin-top: 5px; margin-right: 5px;">删除</button>
+            <button onclick="showEditResource(${r.id})" style="margin-top: 5px; margin-right: 5px;">编辑</button> <!-- 新增编辑按钮 -->
+            <button onclick="loadNotes(${r.id})" style="margin-top: 5px;">笔记</button>
+        </div>
+    `;
             });
 
             // 分页按钮
@@ -330,6 +332,99 @@ async function addResource() {
     } catch (e) {}
 }
 
+// ================= 编辑资源 =================
+async function showEditResource(id) {
+    try {
+        // 获取要编辑的资源详情
+        const resource = await request(`/resource/${id}`);
+        if (!resource) return;
+
+        let html = `
+            <h3>编辑资源</h3>
+
+            <div style="margin: 5px 0;">
+                <input id="editTitle" placeholder="资源标题" style="padding: 5px; width: 300px;" required value="${resource.title || ''}">
+            </div>
+            <div style="margin: 5px 0;">
+                <input id="editDescription" placeholder="资源描述" style="padding: 5px; width: 300px;" value="${resource.description || ''}">
+            </div>
+            <div style="margin: 5px 0;">
+                <input id="editType" placeholder="资源类型（如：文档/视频/课程）" style="padding: 5px; width: 300px;" value="${resource.type || ''}">
+            </div>
+            <div style="margin: 5px 0;">
+                <input id="editUrl" placeholder="资源链接" style="padding: 5px; width: 300px;" required value="${resource.url || ''}">
+            </div>
+
+            <div style="margin: 10px 0;">
+                状态：
+                <select id="editStatus" style="padding: 5px;">
+                    <option value="TODO" ${resource.status === 'TODO' ? 'selected' : ''}>TODO</option>
+                    <option value="LEARNING" ${resource.status === 'LEARNING' ? 'selected' : ''}>LEARNING</option>
+                    <option value="DONE" ${resource.status === 'DONE' ? 'selected' : ''}>DONE</option>
+                </select>
+            </div>
+
+            <div style="margin: 10px 0;">
+                标签：<br>
+                ${tagList.length === 0 ?
+            "暂无可用标签，请先添加标签" :
+            tagList.map(t => {
+                // 判断当前资源是否关联该标签
+                const isChecked = resource.tags && resource.tags.some(tag => tag.id === t.id);
+                return `
+                    <label style="margin-right: 10px;">
+                        <input type="checkbox" value="${t.id}" ${isChecked ? 'checked' : ''}>${t.name}
+                    </label>
+                `;
+            }).join("")
+        }
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button onclick="editResource(${id})" style="padding: 5px 10px;">提交修改</button>
+                <button onclick="loadResources()" style="padding: 5px 10px; margin-left: 10px;">返回</button>
+            </div>
+        `;
+
+        document.getElementById("content").innerHTML = html;
+    } catch (e) {
+        alert("加载编辑表单失败：" + e.message);
+    }
+}
+
+async function editResource(id) {
+    const title = document.getElementById("editTitle");
+    const description = document.getElementById("editDescription");
+    const type = document.getElementById("editType");
+    const url = document.getElementById("editUrl");
+    const status = document.getElementById("editStatus");
+
+    // 空值校验
+    if (!title.value.trim() || !url.value.trim()) {
+        alert("标题和链接不能为空");
+        return;
+    }
+
+    // 获取选中的标签ID
+    const tagIds = [...document.querySelectorAll("input[type=checkbox]:checked")]
+        .map(c => parseInt(c.value));
+
+    try {
+        await request(`/resource/${id}`, "PUT", {
+            title: title.value.trim(),
+            description: description.value.trim(),
+            type: type.value.trim(),
+            url: url.value.trim(),
+            status: status.value,
+            tagIds
+        });
+
+        alert("修改成功");
+        loadResources(currentPage); // 刷新当前页资源列表
+    } catch (e) {
+        alert("修改失败：" + e.message);
+    }
+}
 // ================= 笔记 =================
 async function loadNotes(resourceId) {
     try {
@@ -395,12 +490,15 @@ async function deleteNote(id, resourceId) {
         "login", "register", "logout", "getUser", "init",
         "loadTags", "loadResources", "deleteTag", "addTag",
         "filterStatus", "filterTag", "deleteResource",
-        "showAddResource", "addResource", "loadNotes",
-        "addNote", "deleteNote"
+        "showAddResource", "addResource", "showEditResource", "editResource", // 新增编辑函数
+        "loadNotes", "addNote", "deleteNote"
     ];
 
     exposedFunctions.forEach(fnName => {
         window[fnName] = window[fnName] || eval(fnName);
     });
 })();
+
+window.showEditResource = showEditResource;
+window.editResource = editResource;
 
