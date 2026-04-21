@@ -274,7 +274,7 @@ async function loadNotes(resourceId) {
 }
 
 async function addNote(resourceId) {
-    await request("/note", "POST", {
+    await request("/note", "Put", {
         resourceId,
         content: noteContent.value
     });
