@@ -404,21 +404,3 @@ async function deleteNote(id, resourceId) {
     });
 })();
 
-// ================= 关键：挂载到全局 =================
-window.login = login;
-window.register = register;
-window.logout = logout;
-window.getUser = getUser;
-window.init = init;
-window.loadTags = loadTags;
-window.loadResources = loadResources;
-window.deleteTag = deleteTag;
-window.addTag = addTag;
-window.filterStatus = filterStatus;
-window.filterTag = filterTag;
-window.deleteResource = deleteResource;
-window.showAddResource = showAddResource;
-window.addResource = addResource;
-window.loadNotes = loadNotes;
-window.addNote = addNote;
-window.deleteNote = deleteNote;
