@@ -19,15 +19,35 @@ async function request(url, method = "GET", data = null) {
         options.body = JSON.stringify(data);
     }
 
-    const res = await fetch(BASE_URL + url, options);
-    const result = await res.json();
+    try {
+        const res = await fetch("http://localhost:8080" + url, options);
 
-    if (result.code !== 200) {
-        alert(result.message);
-        throw new Error(result.message);
+        // 🚨 HTTP层错误（404 / 500）
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`HTTP错误: ${res.status} - ${text}`);
+        }
+
+        const result = await res.json();
+
+        // 🚨 后端业务错误
+        if (result.code !== 200) {
+            throw new Error(result.message || "业务错误");
+        }
+
+        return result.data;
+
+    } catch (err) {
+        console.error("请求失败：", err);
+
+        alert(
+            "请求失败：\n" +
+            err.message +
+            "\n\n（常见原因：后端没开 / token错误 / 接口路径错）"
+        );
+
+        throw err;
     }
-
-    return result.data;
 }
 
 // ===================== 登录注册 =====================
@@ -36,13 +56,24 @@ async function login() {
     const password = document.getElementById("loginPassword").value;
 
     try {
-        const data = await request("/user/login", "POST", { username, password });
+        const data = await request("/user/login", "POST", {
+            username,
+            password
+        });
+
+        if (!data || !data.token) {
+            throw new Error("登录成功但未返回token");
+        }
 
         localStorage.setItem("token", data.token);
 
         alert("登录成功");
         location.href = "main.html";
-    } catch (e) {}
+
+    } catch (err) {
+        console.error(err);
+        // ❗ 这里不要再 alert undefined
+    }
 }
 
 async function register() {
@@ -51,10 +82,17 @@ async function register() {
     const email = document.getElementById("regEmail").value;
 
     try {
-        await request("/user/register", "POST", { username, password, email });
+        await request("/user/register", "POST", {
+            username,
+            password,
+            email
+        });
 
         alert("注册成功，请登录");
-    } catch (e) {}
+
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 // ===================== 用户 =====================
