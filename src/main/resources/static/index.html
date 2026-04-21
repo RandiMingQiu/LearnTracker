@@ -2,25 +2,55 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>LearnTracker 登录</title>
+    <title>LearnTracker - 登录</title>
+    <style>
+        body {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        input {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
+<h2>LearnTracker</h2>
 
-<h2>登录</h2>
+<!-- 登录表单 -->
+<div class="form-container">
+    <h3>登录</h3>
+    <input id="loginUsername" placeholder="用户名" required>
+    <input id="loginPassword" type="password" placeholder="密码" required>
+    <br>
+    <button onclick="login()">登录</button>
+</div>
 
-<input id="loginUsername" placeholder="用户名"><br>
-<input id="loginPassword" type="password" placeholder="密码"><br>
-<button onclick="login()">登录</button>
-
-<h2>注册</h2>
-
-<input id="regUsername" placeholder="用户名"><br>
-<input id="regPassword" type="password" placeholder="密码"><br>
-<input id="regEmail" placeholder="邮箱"><br>
-<button onclick="register()">注册</button>
+<!-- 注册表单 -->
+<div class="form-container">
+    <h3>注册</h3>
+    <input id="regUsername" placeholder="用户名" required>
+    <input id="regPassword" type="password" placeholder="密码" required>
+    <input id="regEmail" placeholder="邮箱" required>
+    <br>
+    <button onclick="register()">注册</button>
+</div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
