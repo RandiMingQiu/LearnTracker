@@ -2,53 +2,90 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>LearnTracker - 登录</title>
+    <title>学习资源追踪系统</title>
     <style>
-        body {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 0 20px;
-            font-family: Arial, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
         }
-        .form-container {
-            border: 1px solid #ccc;
-            padding: 20px;
-            border-radius: 8px;
+        body {
+            background-color: #f5f7fa;
+            padding: 60px 20px;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+        .card h3 {
+            font-size: 20px;
+            color: #34495e;
             margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
         }
         input {
-            margin: 5px 0;
-            padding: 8px;
             width: 100%;
-            box-sizing: border-box;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
         }
         button {
-            padding: 10px 20px;
-            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-<h2>LearnTracker</h2>
+<h1 class="page-title">学习资源追踪系统</h1>
+<div class="container">
+    <div class="card">
+        <h3>账号登录</h3>
+        <input id="loginUsername" placeholder="请输入用户名" required>
+        <input id="loginPassword" type="password" placeholder="请输入密码" required>
+        <button onclick="login()">登录</button>
+    </div>
 
-<!-- 登录表单 -->
-<div class="form-container">
-    <h3>登录</h3>
-    <input id="loginUsername" placeholder="用户名" required>
-    <input id="loginPassword" type="password" placeholder="密码" required>
-    <br>
-    <button onclick="login()">登录</button>
-</div>
-
-<!-- 注册表单 -->
-<div class="form-container">
-    <h3>注册</h3>
-    <input id="regUsername" placeholder="用户名" required>
-    <input id="regPassword" type="password" placeholder="密码" required>
-    <input id="regEmail" placeholder="邮箱" required>
-    <br>
-    <button onclick="register()">注册</button>
+    <div class="card">
+        <h3>账号注册</h3>
+        <input id="regUsername" placeholder="请输入用户名" required>
+        <input id="regPassword" type="password" placeholder="请输入密码" required>
+        <input id="regEmail" placeholder="请输入邮箱" required>
+        <button onclick="register()">注册</button>
+    </div>
 </div>
 
 <script src="app.js"></script>
