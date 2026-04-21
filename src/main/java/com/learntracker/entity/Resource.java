@@ -18,20 +18,16 @@ public class Resource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 资源ID
-
     private String title; // 资源标题
     private String description; // 资源描述
     private String type; // 资源类型（视频/文档/课程等）
     private String url; // 资源链接
 
-    // ====================== 这里是修复核心 ======================
-    // 原来：private String status;
-    @Enumerated(EnumType.STRING) // 数据库存储枚举的字符串名字，不是数字下标
+    @Enumerated(EnumType.STRING) // 数据库存储枚举的字符串名字
     private StatusEnum status; // 资源状态，改为枚举类型
-    // ==========================================================
 
-    private LocalDateTime createTime; // 创建时间
-    private LocalDateTime updateTime; // 更新时间
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
     /**
      * 多对多关联标签
