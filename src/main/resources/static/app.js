@@ -93,7 +93,7 @@ async function loadTags() {
         html += `
             <div>
                 ${t.name}
-                <button onclick="deleteTag(${t.id})">删</button>
+                <button onclick="deleteTag(${t.id})">删除</button>
             </div>
         `;
     });
@@ -160,10 +160,10 @@ async function loadResources(page = 1) {
             <div>
                 <b>${r.title}</b> [${r.status}]
                 <br>${r.description || ""}
-                <br><a href="${r.url}" target="_blank">打开</a>
+                <br><a href="${r.url}" target="_blank">打开</a>                
                 <br>标签：${(r.tags || []).map(t => t.name).join(", ")}
                 <br>
-                <button onclick="deleteResource(${r.id})">删</button>
+                <button onclick="deleteResource(${r.id})">删除</button>
                 <button onclick="loadNotes(${r.id})">笔记</button>
                 <hr>
             </div>
@@ -259,7 +259,7 @@ async function loadNotes(resourceId) {
         html += `
             <div>
                 ${n.content}
-                <button onclick="deleteNote(${n.id}, ${resourceId})">删</button>
+                <button onclick="deleteNote(${n.id}, ${resourceId})">删除</button>
             </div>
         `;
     });
@@ -274,7 +274,7 @@ async function loadNotes(resourceId) {
 }
 
 async function addNote(resourceId) {
-    await request("/note", "Put", {
+    await request("/note", "POST", {
         resourceId,
         content: noteContent.value
     });
